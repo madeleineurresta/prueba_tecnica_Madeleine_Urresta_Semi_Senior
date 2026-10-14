@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="toolbar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearch()"
+    />
+    <button class="btn-add" (click)="goToAdd()">Agregar</button>
+  </div>
+
+  <div *ngIf="loading" class="state-msg">Cargando productos...</div>
+
+  <div *ngIf="!loading && errorMessage" class="state-error">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && !errorMessage" class="table-wrapper">
+    <table class="product-table">
+      <thead>
+        <tr>
+          <th>Logo</th>
+          <th>Nombre del producto</th>
+          <th>Descripción</th>
+          <th>Fecha de liberación</th>
+          <th>Fecha de reestructuración</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts; trackBy: trackById" >
+            
+          <td>
+            <img [src]="product.logo" [alt]="product.name" class="product-logo" />
+          </td>
+          <td>{{ product.name }}</td>
+          <td class="description-cell">{{ product.description }}</td>
+          <td>{{ product.date_release | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ product.date_revision | date: 'dd/MM/yyyy' }}</td>
+          <td class="actions-cell">
+            <button class="menu-btn" (click)="toggleMenu(product.id)">⋮</button>
+            <div class="dropdown" *ngIf="openMenuId === product.id">
+              <button (click)="goToEdit(product.id)">Editar</button>
+              <button (click)="openDeleteModal(product)">Eliminar</button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="filteredProducts.length === 0">
+          <td colspan="6" class="empty-msg">No se encontraron productos.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="footer" *ngIf="!loading && !errorMessage">
+    <span>{{ filteredProducts.length }} Resultados</span>
+    <select
+      class="page-size-select"
+      [(ngModel)]="pageSize"
+      (change)="onPageSizeChange()"
+    >
+      <option *ngFor="let size of pageSizes" [value]="size">{{ size }}</option>
+    </select>
+  </div>
+</div>
+
+<app-modal
+  *ngIf="showModal"
+  [title]="'¿Estás seguro de eliminar el producto ' + (productToDelete?.name || '') + '?'"
+  (cancel)="cancelDelete()"
+  (confirm)="confirmDelete()"
+></app-modal>

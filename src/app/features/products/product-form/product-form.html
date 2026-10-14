@@ -1,0 +1,120 @@
+<div class="form-page">
+  <h2 class="form-title">
+    {{ isEditMode ? 'Formulario de Edición' : 'Formulario de Registro' }}
+  </h2>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate>
+    <div class="form-row">
+      <div class="field">
+        <label for="id">ID</label>
+        <input
+          id="id"
+          type="text"
+          formControlName="id"
+          [class.input-error]="f['id'].invalid && (f['id'].touched || submitted)"
+        />
+        <span
+          class="error-msg"
+          *ngIf="f['id'].invalid && (f['id'].touched || submitted)"
+        >
+          <ng-container *ngIf="f['id'].errors?.['required']">ID es requerido.</ng-container>
+          <ng-container *ngIf="f['id'].errors?.['minlength'] || f['id'].errors?.['maxlength']">
+            ID no válido! (3 a 10 caracteres)
+          </ng-container>
+          <ng-container *ngIf="f['id'].errors?.['idExists']">ID no válido! Ya existe.</ng-container>
+        </span>
+      </div>
+
+      <div class="field">
+        <label for="name">Nombre</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          [class.input-error]="f['name'].invalid && (f['name'].touched || submitted)"
+        />
+        <span
+          class="error-msg"
+          *ngIf="f['name'].invalid && (f['name'].touched || submitted)"
+        >
+          Nombre no válido! (5 a 100 caracteres)
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="description">Descripción</label>
+        <input
+          id="description"
+          type="text"
+          formControlName="description"
+          [class.input-error]="f['description'].invalid && (f['description'].touched || submitted)"
+        />
+        <span
+          class="error-msg"
+          *ngIf="f['description'].invalid && (f['description'].touched || submitted)"
+        >
+          Este campo es requerido! (10 a 200 caracteres)
+        </span>
+      </div>
+
+      <div class="field">
+        <label for="logo">Logo</label>
+        <input
+          id="logo"
+          type="text"
+          formControlName="logo"
+          [class.input-error]="f['logo'].invalid && (f['logo'].touched || submitted)"
+        />
+        <span
+          class="error-msg"
+          *ngIf="f['logo'].invalid && (f['logo'].touched || submitted)"
+        >
+          Este campo es requerido!
+        </span>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="date_release">Fecha Liberación</label>
+        <input
+          id="date_release"
+          type="date"
+          formControlName="date_release"
+          [class.input-error]="f['date_release'].invalid && (f['date_release'].touched || submitted)"
+        />
+        <span
+          class="error-msg"
+          *ngIf="f['date_release'].invalid && (f['date_release'].touched || submitted)"
+        >
+          La fecha debe ser igual o mayor a la actual.
+        </span>
+      </div>
+
+      <div class="field">
+        <label for="date_revision">Fecha Revisión</label>
+        <input
+          id="date_revision"
+          type="date"
+          formControlName="date_revision"
+          [class.input-error]="dateRevisionError"
+        />
+        <span class="error-msg" *ngIf="dateRevisionError">
+          La fecha debe ser exactamente un año posterior a la liberación.
+        </span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-reset" (click)="onReset()">Reiniciar</button>
+      <button type="submit" class="btn-submit" [disabled]="productForm.invalid && submitted">
+        {{ isEditMode ? 'Actualizar' : 'Agregar' }}
+      </button>
+    </div>
+
+    <div class="feedback success" *ngIf="successMessage">{{ successMessage }}</div>
+    <div class="feedback error" *ngIf="errorMessage">{{ errorMessage }}</div>
+  </form>
+</div>
